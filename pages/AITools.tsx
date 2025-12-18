@@ -13,15 +13,18 @@ const AITools: React.FC = () => {
     if (!resumeText.trim()) return;
     setIsLoading(true);
     try {
+      // Initialize GoogleGenAI immediately before the call to use the latest API key.
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
+        // Using gemini-3-pro-preview for complex reasoning tasks like professional resume analysis and corporate fit evaluation.
+        model: 'gemini-3-pro-preview',
         contents: `Analyze the following resume text based on Korean corporate standards (chaebol/large enterprises) and ATS compatibility. Provide specific suggestions for improvement in professional tone and structure: \n\n ${resumeText}`,
       });
+      // Directly accessing the .text property of the GenerateContentResponse object.
       setAnalysis(response.text || 'No analysis generated.');
     } catch (error) {
       console.error('AI Analysis failed:', error);
-      setAnalysis('Analysis failed. Please ensure your API_KEY is correctly configured in the environment variables.');
+      setAnalysis('Analysis failed. The evaluation service is currently unavailable. Please try again later.');
     } finally {
       setIsLoading(false);
     }
